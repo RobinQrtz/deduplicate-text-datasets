@@ -88,11 +88,11 @@ while True:
 
 print("Merging suffix trees")
 
-os.popen("rm tmp/out.table.bin.*").read()
+os.popen("rm /tmp/out.table.bin.*").read()
 
 torun = " --suffix-path ".join(files)
-print("./target/debug/dedup_dataset merge --output-file %s --suffix-path %s --num-threads %d"%("tmp/out.table.bin", torun, mp.cpu_count()))
-pipe = os.popen("./target/debug/dedup_dataset merge --output-file %s --suffix-path %s --num-threads %d"%("tmp/out.table.bin", torun, mp.cpu_count()))
+print("./target/debug/dedup_dataset merge --output-file %s --suffix-path %s --num-threads %d"%("/tmp/out.table.bin", torun, mp.cpu_count()))
+pipe = os.popen("./target/debug/dedup_dataset merge --output-file %s --suffix-path %s --num-threads %d"%("/tmp/out.table.bin", torun, mp.cpu_count()))
 output = pipe.read()
 if pipe.close() is not None:
     print("Something went wrong with merging.")
@@ -100,9 +100,9 @@ if pipe.close() is not None:
     exit(1)
 #exit(0)
 print("Now merging individual tables")
-os.popen("cat tmp/out.table.bin.* > tmp/out.table.bin").read()
+os.popen("cat /tmp/out.table.bin.* > /tmp/out.table.bin").read()
 print("Cleaning up")
-os.popen("mv tmp/out.table.bin %s.table.bin"%sys.argv[1]).read()
+os.popen("mv /tmp/out.table.bin %s.table.bin"%sys.argv[1]).read()
 
 if os.path.exists(sys.argv[1]+".table.bin"):
     if os.path.getsize(sys.argv[1]+".table.bin")%os.path.getsize(sys.argv[1]) != 0:

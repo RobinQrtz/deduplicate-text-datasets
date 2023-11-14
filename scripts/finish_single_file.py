@@ -27,11 +27,39 @@ remove = remove[::-1]
 
 ds = open(original,"rb")
 new_ds = open(deduped,"wb")
+removed_ds = open(deduped+"-removed","wb")
+marked_ds = open(deduped+"-marked","wb")
+# copy_ds = open(deduped+"-copy","wb")
+# 
+# start = 0
+# while len(remove) > 0:
+#     a,b = remove.pop()
+#     copy_ds.write(ds.read(a-start))
+#     copy_ds.write(ds.read(b-a))
+#     ds.seek(b)
+#     start = b
+# copy_ds.write(ds.read())
 
+red = '\033[91m'.encode()
+reset = '\033[0m'.encode()
+
+start = 0
+remove_2 = remove[:]
+while len(remove) > 0:
+    a,b = remove.pop()
+    marked_ds.write(ds.read(a-start))
+    marked_ds.write(red + "<duplicate>".encode() + ds.read(b-a) + "</duplicate>".encode() + reset)
+    ds.seek(b)
+    start = b
+marked_ds.write(ds.read())
+
+
+remove = remove_2
 start = 0
 while len(remove) > 0:
     a,b = remove.pop()
     new_ds.write(ds.read(a-start))
+    removed_ds.write(ds.read(b-a) + "\n\n######\n\n".encode("utf-8"))
     ds.seek(b)
     start = b
 new_ds.write(ds.read())
