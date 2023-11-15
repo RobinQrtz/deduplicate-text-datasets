@@ -894,8 +894,8 @@ fn cmd_self_similar(data_file: &String, length_threshold: &usize, frequency_thre
                     if !first {
                         pairs.push(cur_location);
                     } else {
-                        pairs.push(prev_location);
-                        // pairs.push(cur_location);
+                        // pairs.push(prev_location);
+                        pairs.push(cur_location);
                         first = false;
                     }
                 } else {
