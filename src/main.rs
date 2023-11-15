@@ -431,50 +431,50 @@ fn count_occurances_memory(text: &[u8],
     return low-start;
 }
 
-fn is_present_memory(text: &[u8],
-                    size_text: u64,
-                    table: &[u8],
-                    size: u64,
-                    str: &[u8],
-                    size_width: usize) -> u64 {
-    let mut buf: &[u8];
-    assert!(size % (size_width as u64) == 0);
+// fn is_present_memory(text: &[u8],
+                    // size_text: u64,
+                    // table: &[u8],
+                    // size: u64,
+                    // str: &[u8],
+                    // size_width: usize) -> u64 {
+    // let mut buf: &[u8];
+    // assert!(size % (size_width as u64) == 0);
 
-    let mut low = 0;
-    let mut high = size/(size_width as u64);
-    while low < high {
-        let mid = (high+low)/2;
-        let pos = table_load(&table, mid as usize, size_width);
+    // let mut low = 0;
+    // let mut high = size/(size_width as u64);
+    // while low < high {
+        // let mid = (high+low)/2;
+        // let pos = table_load(&table, mid as usize, size_width);
 
-        if pos + str.len() < size_text as usize {
-            buf = &text[pos..pos+str.len()];
-        } else {
-            buf = &text[pos..size_text as usize];
-        }
+        // if pos + str.len() < size_text as usize {
+            // buf = &text[pos..pos+str.len()];
+        // } else {
+            // buf = &text[pos..size_text as usize];
+        // }
 
-        if str <= &buf {
-            high = mid;
-        } else {
-            low = mid+1;
-        }
-    }
+        // if str <= &buf {
+            // high = mid;
+        // } else {
+            // low = mid+1;
+        // }
+    // }
 
-    if low*(size_width as u64)+(size_width as u64) >= (table.len() as u64) {
-	return 0;
-    }
-    let pos = table_load(&table, low as usize, size_width);
-    if pos + str.len() < size_text as usize {
-        buf = &text[pos..pos+str.len()];
-    } else {
-        buf = &text[pos..size_text as usize];
-    }
+    // if low*(size_width as u64)+(size_width as u64) >= (table.len() as u64) {
+	// return 0;
+    // }
+    // let pos = table_load(&table, low as usize, size_width);
+    // if pos + str.len() < size_text as usize {
+        // buf = &text[pos..pos+str.len()];
+    // } else {
+        // buf = &text[pos..size_text as usize];
+    // }
 
-    if str != buf {
-        return 0; // not found
-    }
+    // if str != buf {
+        // return 0; // not found
+    // }
     
-    return 1;
-}
+    // return 1;
+// }
 
 fn find_index_memory(text: &[u8],
                      size_text: u64,
@@ -787,7 +787,7 @@ fn cmd_find_training_data_2(fpath: &String, querypaths: &Vec<String>)   -> std::
 		result.push(one_result);
 	    }
 
-	    let thread_sum:usize = result.into_iter().map(|t| t.join()).sum();
+	    let _thread_sum:usize = result.into_iter().map(|t| t.join()).sum();
 	});
 
 	
@@ -895,7 +895,7 @@ fn cmd_self_similar(data_file: &String, length_threshold: &usize, frequency_thre
                         pairs.push(cur_location);
                     } else {
                         pairs.push(prev_location);
-                        pairs.push(cur_location);
+                        // pairs.push(cur_location);
                         first = false;
                     }
                 } else {
@@ -1436,7 +1436,7 @@ fn cmd_collect(data_file: &String, cache_dir: &String, length_threshold: u64)  -
     let mut path_list = Vec::with_capacity(1000);
     for path in paths {
         let path = path.unwrap().path().as_path().to_str().unwrap().to_string();
-        if !path.starts_with(&Path::new(cache_dir).join(format!("dups_{}_", ds_name.clone())).into_os_string().into_string().unwrap()) {
+        if !path.starts_with(&Path::new(cache_dir).join(format!("dups_{}_", ds_name)).into_os_string().into_string().unwrap()) {
             continue;
         }
         path_list.push(path);

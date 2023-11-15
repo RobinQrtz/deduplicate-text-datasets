@@ -20,17 +20,18 @@ deduped = sys.argv[3]
 remove = []
 fin = open(remove_file)
 for line in fin:
-    if 'out' in line: break
+    if "out" in line:
+        break
 for line in fin:
-    remove.append(list(map(int,line.split())))
-remove = remove[::-1]
+    remove.append(tuple(map(int, line.split())))
+# remove = remove[::-1]
 
-ds = open(original,"rb")
-new_ds = open(deduped,"wb")
-removed_ds = open(deduped+"-removed","wb")
-marked_ds = open(deduped+"-marked","wb")
-# copy_ds = open(deduped+"-copy","wb")
-# 
+ds = open(original, "rb")
+new_ds = open(deduped, "wb")
+removed_ds = open(deduped + "-removed", "wb")
+marked_ds = open(deduped + "-marked", "wb")
+copy_ds = open(deduped + "-copy", "wb")
+
 # start = 0
 # while len(remove) > 0:
 #     a,b = remove.pop()
@@ -40,26 +41,33 @@ marked_ds = open(deduped+"-marked","wb")
 #     start = b
 # copy_ds.write(ds.read())
 
-red = '\033[91m'.encode()
-reset = '\033[0m'.encode()
+red = "\033[91m".encode()
+reset = "\033[0m".encode()
 
 start = 0
 remove_2 = remove[:]
-while len(remove) > 0:
-    a,b = remove.pop()
-    marked_ds.write(ds.read(a-start))
-    marked_ds.write(red + "<duplicate>".encode() + ds.read(b-a) + "</duplicate>".encode() + reset)
-    ds.seek(b)
+# while len(remove) > 0:
+# print(remove)
+for a, b in remove:
+    # a,b = remove.pop()
+    # print(start, a, b, a - start, b - a)
+    marked_ds.write(ds.read(a - start))
+    ds.seek(start)
+    new_ds.write(ds.read(a - start))
+    marked_ds.write(
+        red + "<duplicate>".encode() + ds.read(b - a) + "</duplicate>".encode() + reset
+    )
+    # ds.seek(b)
     start = b
 marked_ds.write(ds.read())
+ds.seek(start)
+new_ds.write(ds.read())
 
 
-remove = remove_2
 start = 0
-while len(remove) > 0:
-    a,b = remove.pop()
-    new_ds.write(ds.read(a-start))
-    removed_ds.write(ds.read(b-a) + "\n\n######\n\n".encode("utf-8"))
+ds.seek(start)
+for a, b in remove:
+    ds.read(a - start)
+    removed_ds.write(ds.read(b - a) + "\n\n######\n\n".encode("utf-8"))
     ds.seek(b)
     start = b
-new_ds.write(ds.read())
