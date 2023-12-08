@@ -24,15 +24,15 @@ import argparse
 
 FILE_EXTENSIONS = {"text": "txt", "json": "jsonl", "csv": "csv"}
 
-parser = argparse.ArgumentParser(description='Load a dataset.')
-parser.add_argument('--save_dir', type=str)
-parser.add_argument('--name', type=str)
-parser.add_argument('--data_dir', type=str, default=None)
-parser.add_argument('--split', type=str)
-parser.add_argument('--subset', type=str, default=None)
-parser.add_argument('--tokenize', action='store_true')
-parser.add_argument('--num_workers', type=int, default=None)
-parser.add_argument('--text_feature_key', type=str, default="text")
+parser = argparse.ArgumentParser(description="Load a dataset.")
+parser.add_argument("--save_dir", type=str)
+parser.add_argument("--name", type=str)
+parser.add_argument("--data_dir", type=str, default=None)
+parser.add_argument("--split", type=str)
+parser.add_argument("--subset", type=str, default=None)
+parser.add_argument("--tokenize", action="store_true")
+parser.add_argument("--num_workers", type=int, default=None)
+parser.add_argument("--text_feature_key", type=str, default="text")
 
 args = parser.parse_args()
 
@@ -43,6 +43,8 @@ save_dir = args.save_dir
 data_dir = args.data_dir
 dataset_name = args.name
 split = args.split
+if split is None:
+    split = "train"
 subset = args.subset
 tokenize = args.tokenize
 num_workers = args.num_workers
@@ -56,7 +58,9 @@ elif dataset_name == "from_disk":
     ds = datasets.load_from_disk(args.data_dir)
 else:
     ds = datasets.load_dataset(dataset_name, subset, split=split)
-assert isinstance(ds, datasets.Dataset), "This is not a HF-dataset. It might be a DatasetDict. Try passing `split`?"
+assert isinstance(
+    ds, datasets.Dataset
+), "This is not a HF-dataset. It might be a DatasetDict. Try passing `split`?"
 
 UID = 0
 
@@ -69,8 +73,10 @@ def sep():
 
 def tokenize_to_bytes(examples):
     tokenized = tokenizer(examples[key])
-    tokenized["input_ids"] = [np.array(input_ids, dtype=np.uint16).view(np.uint8).tobytes() for input_ids in
-                              tokenized["input_ids"]]
+    tokenized["input_ids"] = [
+        np.array(input_ids, dtype=np.uint16).view(np.uint8).tobytes()
+        for input_ids in tokenized["input_ids"]
+    ]
     return tokenized
 
 
@@ -89,6 +95,7 @@ for example in tqdm(ds):
     sizes.append(sizes[-1] + len(next_line))
 
 open(os.path.join(save_dir, dataset_name + "." + split + ".size"), "wb").write(
-    np.array(sizes, dtype=np.uint64).tobytes())
+    np.array(sizes, dtype=np.uint64).tobytes()
+)
 
 print("sizes", os.path.join(save_dir, dataset_name + "." + split + ".size"), sizes)

@@ -55,7 +55,10 @@ for a, b in remove:
     ds.seek(start)
     new_ds.write(ds.read(a - start))
     marked_ds.write(
-        red + "<duplicate>".encode() + ds.read(b - a) + "</duplicate>".encode() + reset
+        # red + "<duplicate>".encode() + ds.read(b - a) + "</duplicate>".encode() + reset
+        "<duplicate>".encode()
+        + ds.read(b - a)
+        + "</duplicate>".encode()
     )
     # ds.seek(b)
     start = b
@@ -68,6 +71,6 @@ start = 0
 ds.seek(start)
 for a, b in remove:
     ds.read(a - start)
-    removed_ds.write(ds.read(b - a) + "\n\n######\n\n".encode("utf-8"))
+    removed_ds.write(ds.read(b - a) + "\n\n######\n\n".encode())
     ds.seek(b)
     start = b

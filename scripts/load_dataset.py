@@ -62,7 +62,10 @@ def sep():
 
 def tok(x):
     if args.tokenize:
-        out = tokenizer.encode(x.decode("utf8"))
+        try:
+            out = tokenizer.encode(x.decode("utf8"))
+        except UnicodeDecodeError:
+            out = tokenizer.encode("x00")
         out = np.array(out, dtype=np.uint16).view(np.uint8).tobytes()
     else:
         out = x
@@ -74,7 +77,9 @@ if not os.path.exists(save_dir):
 
 fout = open(os.path.join(save_dir, dataset_name+"."+split), "wb")
 
+# with mp.get_context("fork").Pool(mp.cpu_count()) as p:
 with mp.get_context("fork").Pool(mp.cpu_count()) as p:
+#if True:
     i = 0
     sizes = [0]
     for b in ds:
@@ -82,6 +87,7 @@ with mp.get_context("fork").Pool(mp.cpu_count()) as p:
     
         text = b['text'].numpy()
         text = p.map(tok,text)
+        # text = map(tok,text)
         
         for x in text:
             next_line = sep()+x

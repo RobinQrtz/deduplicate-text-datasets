@@ -1429,6 +1429,7 @@ fn cmd_collect(data_file: &String, cache_dir: &String, length_threshold: u64)  -
 
     assert!(size_table % size_text == 0);
     let size_width = size_table / size_text;
+    println!("size_width {}: size_table: {:?} size_text: {:?}",  size_width, size_table, size_text);
 
     let ds_name = data_file.split("/").last().unwrap();
     
